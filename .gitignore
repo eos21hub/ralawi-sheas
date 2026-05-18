@@ -8,3 +8,4 @@ dist-ssr
 *.log
 _images_temp
 CLAUDE.md
+.vercel
