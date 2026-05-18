@@ -30,7 +30,7 @@ ffmpeg -y -i "$SRC" \
   "$OUT_DIR/$NAME.mp4"
 
 echo "→ Poster JPG"
-ffmpeg -y -ss 00:00:01 -i "$SRC" -vframes 1 -q:v 3 \
+ffmpeg -y -ss 00:00:01 -i "$SRC" -frames:v 1 -update 1 -q:v 3 \
   "$OUT_DIR/$NAME-poster.jpg"
 
 ls -lh "$OUT_DIR/$NAME".*
