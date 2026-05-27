@@ -130,7 +130,7 @@ npm run compress:video raw/hero.mp4 hero
 
 If a video file is missing, the `<video>` element falls back to its `poster` attribute (the matching WebP in `src/assets/products/`).
 
-**Note:** The FinalCTA section does **not** use `<video>` — it uses an animated `<img>` with Ken Burns + drift via Framer Motion. This was chosen deliberately because the all-source-404 fallback behavior of `<video>` is inconsistent across browsers, causing blank sections. Don't swap it back to `<video>` unless you actually have a cinemagraph file ready.
+**Note:** The FinalCTA section does **not** use `<video>` — it uses an animated `<img>` with Ken Burns + drift via Framer Motion. This was chosen deliberately because the all-source-404 fallback behavior of `<video>` is inconsistent across browsers, causing blank sections. Don't swap it back to `<video>` unless you actually have a cinemagraph file 
 
 ## Accessibility & motion
 
