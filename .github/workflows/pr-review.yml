@@ -1,0 +1,85 @@
+name: PR Review and Approval
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+      statuses: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Post PR Review Comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            
+            const reviewComment = `## PR Review Required
+            
+            **PR Details:**
+            - Title: ${pr.title}
+            - Author: @${pr.user.login}
+            - Changes: ${pr.changed_files} files, +${pr.additions} additions, -${pr.deletions} deletions
+            
+            ### Review Actions:
+            To **approve** this PR, comment: \`/approve\`
+            To **deny/close** this PR, comment: \`/deny\`
+            
+            Please review the changes and use the commands above.`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: reviewComment
+            });
+
+  handle-approval:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Listen for approval command
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comments = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            
+            const latestComment = comments.data[comments.data.length - 1];
+            
+            if (latestComment && latestComment.body.includes('/approve')) {
+              await github.rest.pulls.createReview({
+                pull_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                event: 'APPROVE',
+                body: '✅ PR approved!'
+              });
+            } else if (latestComment && latestComment.body.includes('/deny')) {
+              await github.rest.pulls.createReview({
+                pull_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                event: 'REQUEST_CHANGES',
+                body: '❌ PR denied. Please make requested changes.'
+              });
+            }
