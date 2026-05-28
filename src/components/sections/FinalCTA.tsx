@@ -170,7 +170,7 @@ export default function FinalCTA() {
           ) : (
             <div className="flex items-end gap-4 border-b border-cream/30 pb-3 focus-within:border-shea-light transition-colors duration-500 ease-out">
               <label htmlFor="email" className="sr-only">
-                Email address
+                Enter email address
               </label>
               <input
                 id="email"
